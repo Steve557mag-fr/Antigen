@@ -24,7 +24,7 @@ public class GameLoop : MonoBehaviour
     void Start()
     {
         vein.GenerateAndRender();
-        DebugUtils.DrawComplexPath(vein.CurrentPoints, vein.transform.position, 2, Color.green);
+        Utilities.DrawComplexPath(vein.CurrentPoints, vein.transform.position, 2, Color.green);
 
         blobs = new List<Blob>();
         SpawnBacteria();
@@ -49,6 +49,11 @@ public class GameLoop : MonoBehaviour
         currentBacteria.Protein     = proteins[Random.Range(0,proteins.Count)];
         currentBacteria.CurrentPath = vein.CurrentPoints;
         blobs.Add(currentBacteria);
+    }
+    
+    public void SpawnAntibody(Vector3 position, int id)
+    {
+        
     }
 
 }

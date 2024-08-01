@@ -18,7 +18,7 @@ public class Blob : MonoBehaviour
 
     internal ProteinType Protein
     {
-        set { protein = value; ChangeAppearance(); }
+        set { protein = value; ChangeAppearance(Random.Range(1, 3)); }
         get { return protein; }
     }
 
@@ -37,24 +37,15 @@ public class Blob : MonoBehaviour
     internal Vector3 PivotPath { set { pivot = value; } }
 
 
-    internal virtual void ChangeAppearance()
+    internal virtual void ChangeAppearance(int nNode)
     {
-        int nNode = Random.RandomRange(1, 3);
         for (int i = 0; i < nNode; i++)
         {
             transform.GetChild(i).gameObject.SetActive(true);
         }
     }
 
-    public static LineCalculus CalculateLine(Vector3 point, Vector3 lineA, Vector3 lineB)
-    {
-        Vector3 vAPB = Vector3.Project(point - lineA, (lineB - lineA).normalized);
-        return new() {
-            distance = vAPB.magnitude,
-            projectedBlob = lineA + vAPB,
-            pathVAPB = vAPB
-        };
-    }
+    
 
     public virtual void Move()
     {
@@ -63,7 +54,7 @@ public class Blob : MonoBehaviour
 
         for(int i = 0; i < path.Length-1; i++)
         {
-            LineCalculus line = CalculateLine(
+            LineCalculus line = VectorUtils.CalculateLine(
                 rigidbody.position + rigidbody.velocity * speed,
                 pivot + path[i],
                 pivot + path[i+1]
@@ -77,7 +68,7 @@ public class Blob : MonoBehaviour
 
         // Calculate LinePoint with variations
         Vector2 fLinePoint = currentLine.projectedBlob + Ortho(currentLine.pathVAPB).normalized * Mathf.Sin(Time.time) * 0.25f;
-        DebugUtils.DrawPoint(fLinePoint, 3, Color.red);
+        Utilities.DrawPoint(fLinePoint, 3, Color.red);
 
         // Calulate the line seek force
         Vector2 desiredVelocity = ((fLinePoint - rigidbody.position).normalized * speed);
@@ -98,22 +89,4 @@ public class Blob : MonoBehaviour
 
 }
 
-public struct LineCalculus
-{
-    internal float distance;
-    internal Vector3 projectedBlob, pathVAPB;
-    
-    internal LineCalculus(float d = Mathf.Infinity) {
-        distance = d;
-        projectedBlob = Vector3.zero;
-        pathVAPB = Vector3.zero;
-    }
 
-    internal void Draw()
-    {
-        
-        DebugUtils.DrawPoint(projectedBlob, 0.5f, Color.red);
-        DebugUtils.DrawPoint(projectedBlob - pathVAPB, 0.5f, Color.yellow);        
-        Debug.DrawLine(projectedBlob - pathVAPB, projectedBlob,Color.cyan);
-    }
-}

@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 public class GrabLayout : MonoBehaviour, IEndDragHandler, IDragHandler
 {
+    [SerializeField] int id;
+    [SerializeField] UnityEvent<Vector3,int> onDragEnded;
     [SerializeField] float hardness = 10f;
     [SerializeField] Vector3 initialPosition;
     Vector3 targetPosition;
@@ -18,6 +21,7 @@ public class GrabLayout : MonoBehaviour, IEndDragHandler, IDragHandler
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        onDragEnded.Invoke(targetPosition,id);
         targetPosition = initialPosition;
     }
     
