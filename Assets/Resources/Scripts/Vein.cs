@@ -30,12 +30,17 @@ public class Vein : MonoBehaviour
 
     void Render()
     {
-        foreach(Vector2 point in sharedPoints)
+        foreach (var edge in edges)
         {
-            for (int i = 0; i < edges.Length; i++) {
-                
-            } 
+            edge.points = sharedPoints.toVector2Array();
         }
+
+        foreach (var line in lines)
+        {
+            line.positionCount = sharedPoints.Length;
+            line.SetPositions(sharedPoints);   
+        }   
+
     }
 
     void Generate()
