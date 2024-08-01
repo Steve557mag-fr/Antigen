@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class GameLoop : MonoBehaviour
@@ -22,9 +23,10 @@ public class GameLoop : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        blobs = new List<Blob>();
         vein.GenerateAndRender();
+        DebugUtils.DrawComplexPath(vein.CurrentPoints, vein.transform.position, 2, Color.green);
 
+        blobs = new List<Blob>();
         SpawnBacteria();
 
     }
@@ -43,9 +45,9 @@ public class GameLoop : MonoBehaviour
     {
         GameObject b = Instantiate(bacteriaPrefab, entryPoint.position, Quaternion.identity);
         Bacteria currentBacteria = b.GetComponent<Bacteria>();
-        currentBacteria.PivotPath   = vein.transform.position;
-        currentBacteria.CurrentPath = vein.CurrentPoints;
+        currentBacteria.PivotPath   = vein.transform.position + Vector3.up * Mathf.Cos(Time.time / 2);
         currentBacteria.Protein     = proteins[Random.Range(0,proteins.Count)];
+        currentBacteria.CurrentPath = vein.CurrentPoints;
         blobs.Add(currentBacteria);
     }
 

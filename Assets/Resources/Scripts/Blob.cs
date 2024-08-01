@@ -30,7 +30,6 @@ public class Blob : MonoBehaviour
     }
     public void Update()
     {
-        DebugUtils.DrawComplexPath(path, pivot, 2, Color.green);
         Move();
     }
 

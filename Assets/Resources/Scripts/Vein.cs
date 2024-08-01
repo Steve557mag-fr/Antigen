@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Vein : MonoBehaviour
@@ -15,6 +13,7 @@ public class Vein : MonoBehaviour
     [SerializeField] int shaperBoundMax = 1;
 
     [Header("_Outputs_")]
+    [SerializeField] EdgeCollider2D[] edges;
     [SerializeField] Vector3[] sharedPoints;
     [SerializeField] LineRenderer[] lines;
 
@@ -31,11 +30,11 @@ public class Vein : MonoBehaviour
 
     void Render()
     {
-
-        foreach(var line in lines)
+        foreach(Vector2 point in sharedPoints)
         {
-            line.positionCount = sharedPoints.Length;
-            line.SetPositions(sharedPoints);
+            for (int i = 0; i < edges.Length; i++) {
+                
+            } 
         }
     }
 
