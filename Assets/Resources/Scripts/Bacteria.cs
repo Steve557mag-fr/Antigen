@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Bacteria : Blob
@@ -6,11 +7,25 @@ public class Bacteria : Blob
     public LineRenderer borderBacteria;
     const int POINTS_COUNT = 7;
 
+    bool destroyTimerEnabled = false, duplicationEnabled = false;
+    int nodeLeft = 0;
+    float timerBeforeDestroy = 0, timerBeforeDuplication = 0;
+
+    internal override void OnStart()
+    {
+        timerBeforeDestroy = 999;
+        timerBeforeDuplication = 999;
+        destroyTimerEnabled = false;
+        duplicationEnabled = true;
+    }
+
     internal override void ChangeAppearance(int nNode)
     {
         borderBacteria.positionCount = POINTS_COUNT+1;
         float ANGLEDIF = (360 / POINTS_COUNT);
-        for(int i = 0; i <= POINTS_COUNT; i++)
+        nodeLeft = nNode;
+
+        for (int i = 0; i <= POINTS_COUNT; i++)
         {
             float angle = Mathf.Deg2Rad * ANGLEDIF * i;
             float rng = Random.Range(0, 127);
@@ -22,19 +37,77 @@ public class Bacteria : Blob
             borderBacteria.SetPosition(i, new Vector3(Mathf.Cos(angle) * perlinElipsoid, Mathf.Sin(angle)) * value * size);
             
         }
+        borderBacteria.Simplify(0.1f);
 
-        for(int i = 0; i <= nNode; i++)
+        nodeBorders = new SpriteRenderer[nNode];
+        nodeMasks   = new SpriteMask[nNode];
+        for(int i = 0; i < nNode; i++)
         {
-            int id = 0;
+            int id = i * 2;
             Vector3 pos = (borderBacteria.GetPosition(id) + borderBacteria.GetPosition(id + 1))/2;
+            Vector3 normalSide = VectorUtils.Ortho(borderBacteria.GetPosition(id + 1) - borderBacteria.GetPosition(id)).normalized;
             GameObject node = Instantiate(Resources.Load<GameObject>("Prefabs/Node"), pos, Quaternion.identity);
             node.transform.parent = transform;
             node.transform.localPosition = pos;
+            node.transform.localRotation = Quaternion.AngleAxis( Vector3.Angle(Vector3.left, normalSide), Vector3.forward);
             node.GetComponentInChildren<SpriteMask>().sprite = Protein.form;
             node.GetComponentInChildren<SpriteRenderer>().sprite = Protein.form;
             node.GetComponentInChildren<SpriteRenderer>().color  = Protein.color;
-        }
+            nodeMasks[i] = node.GetComponentInChildren<SpriteMask>();
+            nodeBorders[i] = node.GetComponentInChildren<SpriteRenderer>();
 
+            node.name = "Node " + id;
+
+        }
+    }
+    
+    internal void Attach(Transform node, Antibody antibody)
+    {   
+        if( antibody.Protein.form != Protein.form) Destroy(antibody.gameObject);
+        else {
+            antibody.transform.parent = node;
+            antibody.transform.localPosition = Vector3.right;
+            antibody.transform.localRotation = Quaternion.identity;
+
+            nodeLeft--;
+            if (nodeLeft <= 0) PrepareToDestroy();
+            else DisableDuplication();
+        }
+    }
+
+    void PrepareToDestroy()
+    {
+        timerBeforeDestroy = 5;
+        destroyTimerEnabled = true;
+        duplicationEnabled  = false;
+
+
+    }
+
+    void DisableDuplication()
+    {
+        duplicationEnabled = false;
+    }
+
+    void Duplicate()
+    {
+
+    }
+
+    internal override void OnUpdate()
+    {
+        if (timerBeforeDestroy <= 0 && destroyTimerEnabled) Destroy(gameObject);
+        else timerBeforeDestroy -= Time.deltaTime;
+
+        if (timerBeforeDuplication <= 0 && duplicationEnabled) Duplicate();
+        else timerBeforeDuplication -= Time.deltaTime;
+
+    }
+
+
+    private void OnDestroy()
+    {
+        Instantiate(Resources.Load<GameObject>("Particles/BacteriaDestroyed"), transform.position, Quaternion.identity);
     }
 
 }

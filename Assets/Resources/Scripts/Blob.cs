@@ -10,10 +10,9 @@ public class Blob : MonoBehaviour
     [SerializeField] Vector3[] path;
     [SerializeField] internal SpriteRenderer[] nodeBorders;
     [SerializeField] internal SpriteMask[] nodeMasks;
-
-
+    
+    internal Rigidbody2D rigid;
     ProteinType protein;
-    Rigidbody2D rigidbody;
     Vector3 pivot = Vector3.zero;
 
     internal ProteinType Protein
@@ -24,30 +23,29 @@ public class Blob : MonoBehaviour
 
     private void Start()
     {
-        rigidbody = GetComponent<Rigidbody2D>();
-        rigidbody.velocity = Vector2.right * direction * speed;
-
+        rigid = GetComponent<Rigidbody2D>(); 
+        rigid.velocity = Vector2.right * direction * speed;
+        OnStart();
     }
+
     public void Update()
     {
         Move();
+        OnUpdate();
     }
+
+    internal virtual void OnUpdate() { }
+    internal virtual void OnStart() { }
 
     internal Vector3[] CurrentPath { set { path = value; } }
     internal Vector3 PivotPath { set { pivot = value; } }
 
-
     internal virtual void ChangeAppearance(int nNode)
     {
-        for (int i = 0; i < nNode; i++)
-        {
-            transform.GetChild(i).gameObject.SetActive(true);
-        }
+
     }
 
-    
-
-    public virtual void Move()
+    internal virtual void Move()
     {
         // Find the nearest path (two points, in the path array)
         LineCalculus currentLine = new(999);
@@ -55,7 +53,7 @@ public class Blob : MonoBehaviour
         for(int i = 0; i < path.Length-1; i++)
         {
             LineCalculus line = VectorUtils.CalculateLine(
-                rigidbody.position + rigidbody.velocity * speed,
+                rigid.position + rigid.velocity * speed,
                 pivot + path[i],
                 pivot + path[i+1]
             );
@@ -67,24 +65,24 @@ public class Blob : MonoBehaviour
         }
 
         // Calculate LinePoint with variations
-        Vector2 fLinePoint = currentLine.projectedBlob + Ortho(currentLine.pathVAPB).normalized * Mathf.Sin(Time.time) * 0.25f;
+        float sine = Mathf.Sin(Time.time) * 0.25f;
+        Vector2 fLinePoint = currentLine.projectedBlob + VectorUtils.Ortho(currentLine.pathVAPB).normalized * sine;
         Utilities.DrawPoint(fLinePoint, 3, Color.red);
 
         // Calulate the line seek force
-        Vector2 desiredVelocity = ((fLinePoint - rigidbody.position).normalized * speed);
-        Vector2 seekForce       = desiredVelocity - rigidbody.velocity;
-
-        Gizmos.color = Color.blue;
-        Debug.DrawRay(rigidbody.position, seekForce * 4,Color.magenta);
+        Vector2 seekForce = GetSeekForce(fLinePoint);
+        Debug.DrawRay(rigid.position, seekForce * 4,Color.magenta);
 
         // Apply to this blob
-        rigidbody.AddForce(seekForce * reactivityForce);
+        rigid.AddForce(seekForce);
 
     }
 
-    Vector3 Ortho(Vector3 p)
+    internal Vector3 GetSeekForce(Vector2 target)
     {
-        return new( -p.y, -p.x, 0 );
+        Vector2 desiredVelocity = ((target - rigid.position).normalized * speed);
+        Vector2 seekForce = desiredVelocity - rigid.velocity;
+        return seekForce * reactivityForce;
     }
 
 }

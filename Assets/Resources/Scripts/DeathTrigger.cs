@@ -5,11 +5,11 @@ using UnityEngine.Events;
 
 public class DeathTrigger : MonoBehaviour
 {
-    [SerializeField] internal UnityEvent<Collider2D> eventsOnDeath;
+    [SerializeField] internal UnityEvent eventsOnDeath;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        eventsOnDeath.Invoke(collision);
+        eventsOnDeath.Invoke();
         Destroy(collision.gameObject);
     }
 

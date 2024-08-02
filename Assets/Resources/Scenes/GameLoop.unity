@@ -228,7 +228,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   eventsOnDeath:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1459954296}
+        m_TargetAssemblyTypeName: GameLoop, Assembly-CSharp
+        m_MethodName: AttackBody
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &128909499
 GameObject:
   m_ObjectHideFlags: 0
@@ -282,7 +294,19 @@ MonoBehaviour:
   id: 0
   onDragEnded:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1459954296}
+        m_TargetAssemblyTypeName: GameLoop, Assembly-CSharp
+        m_MethodName: SpawnAntibody
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   hardness: 15
   initialPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &128909502
@@ -1003,7 +1027,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 6.4320064
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1818,7 +1842,19 @@ MonoBehaviour:
   id: 2
   onDragEnded:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1459954296}
+        m_TargetAssemblyTypeName: GameLoop, Assembly-CSharp
+        m_MethodName: SpawnAntibody
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   hardness: 15
   initialPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &1198278037
@@ -2056,19 +2092,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db069c963549bbd4fb103a76c56ff628, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnRate: 8
   proteins:
   - form: {fileID: -2413806693520163455, guid: d315c8ff6b6a5e144bac26907ef35b90, type: 3}
+    antibodyForm: {fileID: 21300000, guid: c9c468efa1ca8ac41a64495eceaff8ce, type: 3}
     color: {r: 0.30588236, g: 0.5019608, b: 1, a: 1}
   - form: {fileID: 7482667652216324306, guid: fba6c7f08c2e91b4f9ed020c30bead15, type: 3}
+    antibodyForm: {fileID: 21300000, guid: ac3a45024bb8493488a638728c73b409, type: 3}
     color: {r: 1, g: 0.8392157, b: 0.30588236, a: 1}
   - form: {fileID: 7482667652216324306, guid: 5258153d6a079084c9510a1f65b55409, type: 3}
+    antibodyForm: {fileID: 21300000, guid: 0557bf9c20c6a2743851e38a29bf539c, type: 3}
     color: {r: 1, g: 0.30588236, b: 0.30588236, a: 1}
+  spawnRate: 8
+  dectectionRange: 1
+  temperatureRate: 0.5
+  temperature: 36
+  layerDetection:
+    serializedVersion: 2
+    m_Bits: 8
   vein: {fileID: 1382384737}
-  blobs: []
   entryPoint: {fileID: 1009616004}
   bacteriaPrefab: {fileID: 5866776702415814910, guid: 5226fc2e891680f4dbe836c50370200d, type: 3}
-  antibodyPrefab: {fileID: 5866776702415814910, guid: 5226fc2e891680f4dbe836c50370200d, type: 3}
+  antibodyPrefab: {fileID: 414792608004707843, guid: 8eacb23e61ead864e94c7c53d4a41e09, type: 3}
 --- !u!1 &1553422242
 GameObject:
   m_ObjectHideFlags: 0

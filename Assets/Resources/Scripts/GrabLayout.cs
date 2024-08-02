@@ -21,7 +21,7 @@ public class GrabLayout : MonoBehaviour, IEndDragHandler, IDragHandler
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        onDragEnded.Invoke(targetPosition,id);
+        onDragEnded.Invoke(Input.mousePosition,id);
         targetPosition = initialPosition;
     }
     
