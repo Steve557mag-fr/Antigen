@@ -2,6 +2,7 @@ using JetBrains.Annotations;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class GameLoop : MonoBehaviour
 {
@@ -13,16 +14,25 @@ public class GameLoop : MonoBehaviour
     [SerializeField] float temperature = 36f;
     [SerializeField] LayerMask layerDetection;
 
+    [Header("_Win Conditions_")]
+    [SerializeField] int maxBacteria = 0;
+    [SerializeField] bool isFinite = true;
+
+
     [Header("_References_")]
     [SerializeField] Vein vein;
     [SerializeField] Transform entryPoint;
-    [SerializeField] UIThermometer thermometer;
+    [SerializeField] UIManager uiManager;
 
     [Header("_Prefabs_")]
     [SerializeField] GameObject bacteriaPrefab;
     [SerializeField] GameObject antibodyPrefab;
     
+    int score = 0;
     float timerSpawn;
+    bool stopped;
+    bool winningScanEnabled = false;
+
 
     void Start()
     {
@@ -33,11 +43,20 @@ public class GameLoop : MonoBehaviour
 
         timerSpawn = spawnRate;
         temperature = 36f;
-        thermometer.UpdateUI(temperature);
+        uiManager.thermometer.UpdateUI(temperature);
+        isFinite = true;
     }
 
     void Update()
     {
+        if (stopped) return;
+
+        if(winningScanEnabled && FindObjectsByType<Blob>(FindObjectsSortMode.None).Length == 0)
+        {
+            winningScanEnabled = false;
+            Win();
+        }
+
         if (timerSpawn > 0) {timerSpawn -= Time.deltaTime; }
         else{
             timerSpawn = spawnRate;
@@ -54,60 +73,109 @@ public class GameLoop : MonoBehaviour
         currentBacteria.CurrentPath = vein.CurrentPoints;
     }
     
+    public Bacteria CheckForBacteria(Vector3 pixelPosition)
+    {
+        if (stopped) return null;
+        Vector3 position = Camera.main.ScreenToWorldPoint(pixelPosition);
+        var r = Physics2D.OverlapCircle(position, dectectionRange, layerDetection);
+
+        if (r == null || !r.GetComponent<Bacteria>()) return null;
+        else return r.GetComponent<Bacteria>();
+
+    }
+
     public void SpawnAntibody(Vector3 pixelPosition, int id)
     {
+        if (stopped) return;
+
+        var bacteria = CheckForBacteria(pixelPosition);
+        if (bacteria == null) return;
+
         Vector3 position = Camera.main.ScreenToWorldPoint(pixelPosition);
-        Utilities.DrawPoint(position, 5, Color.blue, dectectionRange);
+        Transform targetNode = EvaluateAttachPossibility(bacteria.GetComponent<Bacteria>(), position);
+        if (targetNode == null) return;
 
-        var r = Physics2D.OverlapCircle(position, 5f, layerDetection);
-        if (r != null && r.GetComponent<Bacteria>())
-        {
-            print(r.gameObject.name);
-            Utilities.DrawPoint(r.transform.position, 1, Color.blue, 5);
+        position.z = 0;
+        GameObject b = Instantiate(antibodyPrefab, position, Quaternion.identity);
+        Antibody currentAnitbody = b.GetComponent<Antibody>();
+        currentAnitbody.Protein = proteins[id];
+        currentAnitbody.nodeTarget = targetNode;
 
-            Transform targetNode = EvaluateAttachPossibility(r.GetComponent<Bacteria>());
-            if (targetNode == null) return;
-
-            position.z = 0;
-            GameObject b = Instantiate(antibodyPrefab, position, Quaternion.identity);
-            Antibody currentAnitbody = b.GetComponent<Antibody>();
-            currentAnitbody.Protein = proteins[id];
-            currentAnitbody.nodeTarget = targetNode;
-        }
     }
 
     public void AttackBody(){
+        if (stopped) return;
         temperature += temperatureRate;
-        thermometer.UpdateUI(temperature);
+        uiManager.thermometer.UpdateUI(temperature);
         if (temperature >= 38.5f) GameOver();
 
     }
 
     public void GameOver()
     {
-
-        // do code ...
+        stopped = true;
         var blobs = FindObjectsOfType<Blob>();
         foreach(Blob b in blobs)
         {
             b.Stop();
         }
-
-        SceneManager.LoadScene("Menu");
-
+        uiManager.DisplayGameOver();
     }
 
-    Transform EvaluateAttachPossibility(Bacteria bacteria)
+    internal bool IsStopped => stopped;
+
+    Transform EvaluateAttachPossibility(Bacteria bacteria, Vector3 position)
     {
+        Transform t = null;
+        float smDist = 9999;
+
         for(int i = 0; i < 3; i++)
         {
             if (bacteria.transform.Find($"Node {i}") == null || bacteria.transform.Find($"Node {i}").childCount > 2) continue;
-            return bacteria.transform.Find($"Node {i}");
+
+            var currentT = bacteria.transform.Find($"Node {i}");
+            var crDist = Vector3.Distance(position, currentT.position);
+            if (crDist < smDist)
+            {
+                smDist = crDist;
+                t = currentT;
+            }
+
         }
-        return null;
+
+        return t;
+    }
+
+
+    void PrepareWin()
+    {
+        //Win();
+        winningScanEnabled = true;
+        spawnRate = 9999;
+        timerSpawn = 9999;
+    }
+
+    void Win()
+    {
+        //do code..
+        stopped = true;
+    }
+
+    internal void OnBacteriaDied()
+    {
+        score = Mathf.Clamp(score + 1, 0, maxBacteria);
+
+        if(score % 2 == 0 && isFinite)
+        {
+            spawnRate = Mathf.Clamp(spawnRate - 1, 1.5f, 15);
+        }
+
+        if (score >= maxBacteria && isFinite) PrepareWin();
+        uiManager.UpdateScores(score, maxBacteria);
     }
 
     public static GameLoop GetGameLoop() => FindAnyObjectByType<GameLoop>();
+
 
 }
 

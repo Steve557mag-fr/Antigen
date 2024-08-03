@@ -29,6 +29,7 @@ public class Antibody : Blob
     internal override void ChangeAppearance(int nNode)
     {
         GetComponent<SpriteRenderer>().sprite = Protein.antibodyForm;
+        Destroy(gameObject, 30); // auto-destroy after 30sec.
     }
 
     internal void Attach()

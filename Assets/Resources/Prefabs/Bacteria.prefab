@@ -183,8 +183,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afc4ffe2e17a48140b4359297a5a011b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0.75
-  direction: 2
+  speed: 0.8
+  direction: 3.44
   reactivityForce: 0.33
   path: []
   nodeBorders:

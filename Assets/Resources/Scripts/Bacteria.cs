@@ -112,6 +112,7 @@ public class Bacteria : Blob
     private void OnDestroy()
     {
         Instantiate(Resources.Load<GameObject>("Particles/BacteriaDestroyed"), transform.position, Quaternion.identity);
+        GameLoop.GetGameLoop().OnBacteriaDied();
     }
 
 }

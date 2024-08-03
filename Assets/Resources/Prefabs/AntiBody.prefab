@@ -126,7 +126,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87a6e76893d37514b95206d151ea866e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
+  speed: 1.25
   direction: 1
   reactivityForce: 0.5
   path: []
