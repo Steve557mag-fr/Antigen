@@ -157,7 +157,7 @@ public class GameLoop : MonoBehaviour
 
     void Win()
     {
-        //do code..
+        uiManager.DisplayWin();
         stopped = true;
     }
 

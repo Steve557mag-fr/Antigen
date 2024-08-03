@@ -11,10 +11,8 @@ public class UIManager : MonoBehaviour
 
     internal void UpdateScores(int currentBacteria, int maxBacteria)
     {
-
         textCurrentBacteria.text = currentBacteria.ToString();
         textCurrentBacteriaKilled.text = (maxBacteria - currentBacteria).ToString();
-
     }
 
     internal void DisplayGameOver()
