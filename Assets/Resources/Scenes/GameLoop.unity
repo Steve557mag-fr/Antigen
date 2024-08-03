@@ -2783,7 +2783,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thermometer: {fileID: 1099191257}
   groupGameOver: {fileID: 2127852042}
-  groupWin: {fileID: 0}
+  groupWin: {fileID: 545003352}
   textCurrentBacteriaKilled: {fileID: 301458003}
   textCurrentBacteria: {fileID: 870869274}
 --- !u!1 &1554919312
