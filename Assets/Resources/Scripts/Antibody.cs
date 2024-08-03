@@ -19,7 +19,6 @@ public class Antibody : Blob
             // Align with the target
             var angle = Vector3.Dot(nodeTarget.up * -1, transform.up * -1);
             rigid.angularVelocity = angle * rotationReactivity;
-            print($"angle Align: {angle}");
 
             // Check distance for docking
             if (Vector3.Distance(nodeTarget.position, transform.position) < dockingRadius) Attach();    

@@ -14,13 +14,19 @@ public static class Utilities
             DrawPoint(pivot + array[i], size, color);    
         }
     }
+
+    public static float Remap(this float value, float from1, float to1, float from2, float to2)
+    {
+        return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
+    }
+
 }
 
 public static class VectorUtils
 {
     public static Vector2[] toVector2Array(this Vector3[] v3) => System.Array.ConvertAll(v3, getV3fromV2);
     public static Vector2 getV3fromV2(Vector3 v3) => new Vector2(v3.x, v3.y);
-    public static Vector3 Ortho(Vector3 p) => new(-p.y, -p.x, 0);
+    public static Vector3 Ortho(Vector3 p) => new(-p.y, p.x, p.z);
     public static LineCalculus CalculateLine(Vector3 point, Vector3 lineA, Vector3 lineB)
     {
         Vector3 vAPB = Vector3.Project(point - lineA, (lineB - lineA).normalized);

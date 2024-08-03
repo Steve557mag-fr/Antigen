@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,6 +16,7 @@ public class GameLoop : MonoBehaviour
     [Header("_References_")]
     [SerializeField] Vein vein;
     [SerializeField] Transform entryPoint;
+    [SerializeField] UIThermometer thermometer;
 
     [Header("_Prefabs_")]
     [SerializeField] GameObject bacteriaPrefab;
@@ -31,6 +33,7 @@ public class GameLoop : MonoBehaviour
 
         timerSpawn = spawnRate;
         temperature = 36f;
+        thermometer.UpdateUI(temperature);
     }
 
     void Update()
@@ -75,7 +78,7 @@ public class GameLoop : MonoBehaviour
 
     public void AttackBody(){
         temperature += temperatureRate;
-
+        thermometer.UpdateUI(temperature);
         if (temperature >= 38.5f) GameOver();
 
     }
@@ -84,6 +87,12 @@ public class GameLoop : MonoBehaviour
     {
 
         // do code ...
+        var blobs = FindObjectsOfType<Blob>();
+        foreach(Blob b in blobs)
+        {
+            b.Stop();
+        }
+
         SceneManager.LoadScene("Menu");
 
     }

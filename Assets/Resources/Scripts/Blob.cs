@@ -14,6 +14,7 @@ public class Blob : MonoBehaviour
     internal Rigidbody2D rigid;
     ProteinType protein;
     Vector3 pivot = Vector3.zero;
+    bool lockMovement;
 
     internal ProteinType Protein
     {
@@ -30,7 +31,7 @@ public class Blob : MonoBehaviour
 
     public void Update()
     {
-        Move();
+        if (!lockMovement) Move();
         OnUpdate();
     }
 
@@ -47,6 +48,7 @@ public class Blob : MonoBehaviour
 
     internal virtual void Move()
     {
+
         // Find the nearest path (two points, in the path array)
         LineCalculus currentLine = new(999);
 
@@ -76,6 +78,13 @@ public class Blob : MonoBehaviour
         // Apply to this blob
         rigid.AddForce(seekForce);
 
+    }
+
+    internal void Stop()
+    {
+        lockMovement = true;
+        rigid.velocity = Vector2.zero;
+        rigid.angularVelocity = 0;
     }
 
     internal Vector3 GetSeekForce(Vector2 target)
