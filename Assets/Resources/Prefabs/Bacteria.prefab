@@ -186,7 +186,6 @@ MonoBehaviour:
   speed: 0.8
   direction: 3.44
   reactivityForce: 0.33
-  path: []
   nodeBorders:
   - {fileID: 0}
   - {fileID: 0}
@@ -195,6 +194,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  onBlobDuplicated: {fileID: 808094715958700546, guid: 1cc2c5c7594dcb54eb96e912d1b41544, type: 3}
+  onBacteriaDestroyed: {fileID: 299909721195240186, guid: 824f750faa17e8f4e9ed8507b9bc990c, type: 3}
   size: 1
   perlinExtentricity: 1.15
   perlinElipsoid: 1
