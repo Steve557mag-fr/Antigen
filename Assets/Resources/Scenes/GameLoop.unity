@@ -2857,7 +2857,11 @@ PrefabInstance:
       value: = GAME LOOP =
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: -271649118540429165, guid: da8601e67c93e62449f9865f94188149, type: 3}
+    - {fileID: 9102641658983459860, guid: da8601e67c93e62449f9865f94188149, type: 3}
+    - {fileID: 4921858588270277261, guid: da8601e67c93e62449f9865f94188149, type: 3}
+    - {fileID: 4821659533234479241, guid: da8601e67c93e62449f9865f94188149, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: da8601e67c93e62449f9865f94188149, type: 3}
