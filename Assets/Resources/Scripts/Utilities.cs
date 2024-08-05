@@ -20,6 +20,11 @@ public static class Utilities
         return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
     }
 
+    public static void PlayAudioSource(AudioSource source)
+    {
+        if (source == null || source.isPlaying) return; source.Play();
+    }
+
 }
 
 public static class VectorUtils

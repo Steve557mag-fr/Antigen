@@ -1,22 +1,23 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Bacteria : Blob
 {
-    public float size = 1f, perlinExtentricity = 1, perlinElipsoid = 1;
-    public LineRenderer borderBacteria;
-    const int POINTS_COUNT = 7;
+    [SerializeField] AudioSource onBacteriaDestroyed;
 
-    bool destroyTimerEnabled = false, duplicationEnabled = false;
+    [Header("Bacteria Generals")]
+    [SerializeField] float size = 1f;
+    [SerializeField] float perlinExtentricity = 1, perlinElipsoid = 1;
+    [SerializeField] LineRenderer borderBacteria;
+
+    const int POINTS_COUNT = 7;
+    bool destroyTimerEnabled = false;
     int nodeLeft = 0;
-    float timerBeforeDestroy = 0, timerBeforeDuplication = 0;
+    float timerBeforeDestroy = 0;
 
     internal override void OnStart()
     {
         timerBeforeDestroy = 999;
-        timerBeforeDuplication = 999;
         destroyTimerEnabled = false;
-        duplicationEnabled = true;
     }
 
     internal override void ChangeAppearance(int nNode)
@@ -45,7 +46,8 @@ public class Bacteria : Blob
         {
             int id = i * 2;
             Vector3 pos = (borderBacteria.GetPosition(id) + borderBacteria.GetPosition(id + 1))/2;
-            Vector3 normal = VectorUtils.Ortho(borderBacteria.GetPosition(id + 1) - borderBacteria.GetPosition(id)).normalized;
+            Vector3 dir = borderBacteria.GetPosition(id + 1) - borderBacteria.GetPosition(id);
+            Vector3 normal = VectorUtils.Ortho(dir).normalized;
 
             Debug.DrawRay(pos, Vector3.up, Color.green, 6);
             Debug.DrawRay(pos, normal, Color.blue, 6);
@@ -53,7 +55,7 @@ public class Bacteria : Blob
             GameObject node = Instantiate(Resources.Load<GameObject>("Prefabs/Node"), pos, Quaternion.identity);
             node.transform.parent = transform;
             node.transform.localPosition = pos;
-            node.transform.localRotation = Quaternion.AngleAxis(Vector3.Angle(Vector3.up, normal)+180, Vector3.forward);
+            node.transform.localRotation = Quaternion.FromToRotation(Vector3.up, -normal);
             node.GetComponentInChildren<SpriteMask>().sprite = Protein.form;
             node.GetComponentInChildren<SpriteRenderer>().sprite = Protein.form;
             node.GetComponentInChildren<SpriteRenderer>().color  = Protein.color;
@@ -75,7 +77,7 @@ public class Bacteria : Blob
 
             nodeLeft--;
             if (nodeLeft <= 0) PrepareToDestroy();
-            else DisableDuplication();
+            else SetDuplicationCoolDown(180);
         }
     }
 
@@ -87,27 +89,12 @@ public class Bacteria : Blob
 
 
     }
-
-    void DisableDuplication()
-    {
-        duplicationEnabled = false;
-    }
-
-    void Duplicate()
-    {
-
-    }
-
     internal override void OnUpdate()
     {
         if (timerBeforeDestroy <= 0 && destroyTimerEnabled) Destroy(gameObject);
         else timerBeforeDestroy -= Time.deltaTime;
 
-        if (timerBeforeDuplication <= 0 && duplicationEnabled) Duplicate();
-        else timerBeforeDuplication -= Time.deltaTime;
-
     }
-
 
     private void OnDestroy()
     {

@@ -1,8 +1,5 @@
-using JetBrains.Annotations;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
 
 public class GameLoop : MonoBehaviour
 {
@@ -13,6 +10,10 @@ public class GameLoop : MonoBehaviour
     [SerializeField] float temperatureRate = 0.5f;
     [SerializeField] float temperature = 36f;
     [SerializeField] LayerMask layerDetection;
+
+    [Header("Audio")]
+    [SerializeField] AudioSource onBacteriaSpawned;
+    [SerializeField] AudioSource onTemperatureIncreased, onAntibodySpawned;
 
     [Header("_Win Conditions_")]
     [SerializeField] int maxBacteria = 0;
@@ -39,7 +40,8 @@ public class GameLoop : MonoBehaviour
         vein.GenerateAndRender();
         Utilities.DrawComplexPath(vein.CurrentPoints, vein.transform.position, 2, Color.green);
 
-        SpawnBacteria();
+        SpawnBacteria(entryPoint.position);
+        uiManager.UpdateScores(score, maxBacteria);
 
         timerSpawn = spawnRate;
         temperature = 36f;
@@ -60,17 +62,18 @@ public class GameLoop : MonoBehaviour
         if (timerSpawn > 0) {timerSpawn -= Time.deltaTime; }
         else{
             timerSpawn = spawnRate;
-            SpawnBacteria();
+            SpawnBacteria(entryPoint.position);
         }
     }
 
-    internal void SpawnBacteria()
+    internal void SpawnBacteria(Vector3 position, bool forceProtein = false, ProteinType proteinType = new())
     {
-        GameObject b = Instantiate(bacteriaPrefab, entryPoint.position, Quaternion.identity);
+        GameObject b = Instantiate(bacteriaPrefab, position, Quaternion.identity);
         Bacteria currentBacteria = b.GetComponent<Bacteria>();
         currentBacteria.PivotPath   = vein.transform.position + Vector3.up * Mathf.Cos(Time.time / 2);
-        currentBacteria.Protein     = proteins[Random.Range(0,proteins.Count)];
+        currentBacteria.Protein     = forceProtein ? proteinType : proteins[Random.Range(0,proteins.Count)];
         currentBacteria.CurrentPath = vein.CurrentPoints;
+        Utilities.PlayAudioSource(onBacteriaSpawned);
     }
     
     public Bacteria CheckForBacteria(Vector3 pixelPosition)
@@ -100,6 +103,7 @@ public class GameLoop : MonoBehaviour
         Antibody currentAnitbody = b.GetComponent<Antibody>();
         currentAnitbody.Protein = proteins[id];
         currentAnitbody.nodeTarget = targetNode;
+        Utilities.PlayAudioSource(onAntibodySpawned);
 
     }
 
@@ -107,6 +111,8 @@ public class GameLoop : MonoBehaviour
         if (stopped) return;
         temperature += temperatureRate;
         uiManager.thermometer.UpdateUI(temperature);
+        Utilities.PlayAudioSource(onTemperatureIncreased);
+
         if (temperature >= 38.5f) GameOver();
 
     }

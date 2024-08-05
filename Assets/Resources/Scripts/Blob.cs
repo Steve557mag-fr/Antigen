@@ -1,20 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Blob : MonoBehaviour
 {
-    [SerializeField] float speed, direction=1, reactivityForce = 0.5f;
-    [SerializeField] Vector3[] path;
+    [Header("Movements")]
+    [SerializeField] float speed;
+    [SerializeField] float direction = 1, reactivityForce = 0.5f;
+
+    [Header("References")]
     [SerializeField] internal SpriteRenderer[] nodeBorders;
     [SerializeField] internal SpriteMask[] nodeMasks;
-    
+
+    [Header("Audio")]
+    [SerializeField] AudioSource onBlobDuplicated;
+
+
     internal Rigidbody2D rigid;
     ProteinType protein;
     Vector3 pivot = Vector3.zero;
     bool lockMovement;
+    float timerBeforeDuplication = 0;
+    internal bool duplicationEnabled = false;
+    Vector3[] path;
 
     internal ProteinType Protein
     {
@@ -22,8 +29,12 @@ public class Blob : MonoBehaviour
         get { return protein; }
     }
 
+    internal Vector3[] CurrentPath { set => path = value; }
+    internal Vector3 PivotPath { set => pivot = value; }
+
     private void Start()
     {
+        SetDuplicationCoolDown(3);
         rigid = GetComponent<Rigidbody2D>(); 
         rigid.velocity = Vector2.right * direction * speed;
         OnStart();
@@ -31,21 +42,19 @@ public class Blob : MonoBehaviour
 
     public void Update()
     {
+        if(!duplicationEnabled && timerBeforeDuplication > 0) timerBeforeDuplication -= Time.deltaTime;
+        else duplicationEnabled = true;
+
         if (!lockMovement) Move();
         OnUpdate();
     }
 
     internal virtual void OnUpdate() { }
     internal virtual void OnStart() { }
-
-    internal Vector3[] CurrentPath { set { path = value; } }
-    internal Vector3 PivotPath { set { pivot = value; } }
-
     internal virtual void ChangeAppearance(int nNode)
     {
 
     }
-
     internal virtual void Move()
     {
 
@@ -79,14 +88,24 @@ public class Blob : MonoBehaviour
         rigid.AddForce(seekForce);
 
     }
-
     internal void Stop()
     {
         lockMovement = true;
         rigid.velocity = Vector2.zero;
         rigid.angularVelocity = 0;
     }
-
+    internal void Duplicate()
+    {
+        if(!duplicationEnabled) return;
+        GameLoop.GetGameLoop().SpawnBacteria(transform.position, true, Protein);
+        SetDuplicationCoolDown(2);
+        Utilities.PlayAudioSource(onBlobDuplicated);
+    }
+    internal void SetDuplicationCoolDown(int sec)
+    {
+        timerBeforeDuplication = sec;
+        duplicationEnabled = false;
+    }
     internal Vector3 GetSeekForce(Vector2 target)
     {
         Vector2 desiredVelocity = ((target - rigid.position).normalized * speed);
