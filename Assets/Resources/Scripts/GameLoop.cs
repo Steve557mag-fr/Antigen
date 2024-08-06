@@ -69,7 +69,7 @@ public class GameLoop : MonoBehaviour
     internal void SpawnBacteria(Vector3 position, bool forceProtein = false, ProteinType proteinType = new())
     {
         GameObject b = Instantiate(bacteriaPrefab, position, Quaternion.identity);
-        Bacteria currentBacteria = b.GetComponent<Bacteria>();
+        Bacteria currentBacteria    = b.GetComponent<Bacteria>();
         currentBacteria.PivotPath   = vein.transform.position + Vector3.up * Mathf.Cos(Time.time / 2);
         currentBacteria.Protein     = forceProtein ? proteinType : proteins[Random.Range(0,proteins.Count)];
         currentBacteria.CurrentPath = vein.CurrentPoints;
@@ -103,7 +103,7 @@ public class GameLoop : MonoBehaviour
         Antibody currentAnitbody = b.GetComponent<Antibody>();
         currentAnitbody.Protein = proteins[id];
         currentAnitbody.nodeTarget = targetNode;
-        Utilities.PlayAudioSource(onAntibodySpawned);
+        onAntibodySpawned.Play();
 
     }
 

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Bacteria : Blob
 {
-    [SerializeField] AudioSource onBacteriaDestroyed;
+    [SerializeField] AudioSource onBacteriaDestroyed, onBacteriaEated;
 
     [Header("Bacteria Generals")]
     [SerializeField] float size = 1f;
@@ -100,6 +100,10 @@ public class Bacteria : Blob
     {
         Instantiate(Resources.Load<GameObject>("Particles/BacteriaDestroyed"), transform.position, Quaternion.identity);
         GameLoop.GetGameLoop().OnBacteriaDied();
+        onBacteriaDestroyed.transform.parent = null;
+        onBacteriaDestroyed.enabled = true;
+        onBacteriaDestroyed.Play();
+        Destroy(onBacteriaDestroyed.gameObject, 3);
     }
 
 }
