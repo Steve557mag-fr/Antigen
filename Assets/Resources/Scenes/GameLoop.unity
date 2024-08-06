@@ -2852,6 +2852,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5277536342475698351, guid: da8601e67c93e62449f9865f94188149, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 6869194824673292998, guid: bc7dde10905e26b4c9a88026814620ae, type: 2}
+    - target: {fileID: 7078997893284271413, guid: da8601e67c93e62449f9865f94188149, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 5193912845762988439, guid: bc7dde10905e26b4c9a88026814620ae, type: 2}
+    - target: {fileID: 7348711577059265249, guid: da8601e67c93e62449f9865f94188149, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 5193912845762988439, guid: bc7dde10905e26b4c9a88026814620ae, type: 2}
+    - target: {fileID: 7644127328486378548, guid: da8601e67c93e62449f9865f94188149, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 5193912845762988439, guid: bc7dde10905e26b4c9a88026814620ae, type: 2}
     - target: {fileID: 9150365326940363816, guid: da8601e67c93e62449f9865f94188149, type: 3}
       propertyPath: m_Name
       value: = GAME LOOP =
