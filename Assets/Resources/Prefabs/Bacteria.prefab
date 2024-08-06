@@ -198,6 +198,7 @@ MonoBehaviour:
   - {fileID: 0}
   onBlobDuplicated: {fileID: 1298979166830663206}
   onBacteriaDestroyed: {fileID: 7741949316150794343}
+  onBacteriaEated: {fileID: 0}
   size: 1
   perlinExtentricity: 1.15
   perlinElipsoid: 1
@@ -305,7 +306,7 @@ AudioSource:
   m_GameObject: {fileID: 7542984337041936077}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 5193912845762988439, guid: bc7dde10905e26b4c9a88026814620ae, type: 2}
   m_audioClip: {fileID: 8300000, guid: 01b911d046e20e746af90eff9b092827, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -433,7 +434,7 @@ AudioSource:
   m_GameObject: {fileID: 9223186348421360809}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 5193912845762988439, guid: bc7dde10905e26b4c9a88026814620ae, type: 2}
   m_audioClip: {fileID: 8300000, guid: 2a7830ee5ddba704cab2177e84211af9, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
