@@ -9,6 +9,7 @@ public class Vein : MonoBehaviour
     [SerializeField] float stepStretch = 1;
 
     [Header("_Shaper_")]
+    [SerializeField] internal float veinRadius;
     [SerializeField] int shaperBoundMin = -1;
     [SerializeField] int shaperBoundMax = 1;
 
@@ -16,6 +17,7 @@ public class Vein : MonoBehaviour
     [SerializeField] EdgeCollider2D[] edges;
     [SerializeField] Vector3[] sharedPoints;
     [SerializeField] LineRenderer[] lines;
+
 
     public Vector3[] CurrentPoints{
            get { return sharedPoints; }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Xml.Schema;
 using UnityEngine;
 
 public class GameLoop : MonoBehaviour
@@ -10,7 +11,8 @@ public class GameLoop : MonoBehaviour
     [SerializeField] float temperatureRate = 0.5f;
     [SerializeField] float temperature = 36f;
     [SerializeField] LayerMask layerDetection;
-
+    [SerializeField] int maxAntigenPerBacteria = 3;
+    
     [Header("Audio")]
     [SerializeField] AudioSource onBacteriaSpawned;
     [SerializeField] AudioSource onTemperatureIncreased, onAntibodySpawned;
@@ -18,7 +20,6 @@ public class GameLoop : MonoBehaviour
     [Header("_Win Conditions_")]
     [SerializeField] int maxBacteria = 0;
     [SerializeField] bool isFinite = true;
-
 
     [Header("_References_")]
     [SerializeField] Vein vein;
@@ -28,6 +29,7 @@ public class GameLoop : MonoBehaviour
     [Header("_Prefabs_")]
     [SerializeField] GameObject bacteriaPrefab;
     [SerializeField] GameObject antibodyPrefab;
+    [SerializeField] GameObject[] AllyPrefabs;
     
     int score = 0;
     float timerSpawn;
@@ -73,19 +75,24 @@ public class GameLoop : MonoBehaviour
         currentBacteria.PivotPath   = vein.transform.position + Vector3.up * Mathf.Cos(Time.time / 2);
         currentBacteria.Protein     = forceProtein ? proteinType : proteins[Random.Range(0,proteins.Count)];
         currentBacteria.CurrentPath = vein.CurrentPoints;
+        currentBacteria.ChangeAppearance(Random.Range(1, maxAntigenPerBacteria));
         Utilities.PlayAudioSource(onBacteriaSpawned);
     }
     
-    public Bacteria CheckForBacteria(Vector3 pixelPosition)
+
+    public void SpawnAlly(Vector3 pixelPosition, int id)
     {
-        if (stopped) return null;
-        Vector3 position = Camera.main.ScreenToWorldPoint(pixelPosition);
-        var r = Physics2D.OverlapCircle(position, dectectionRange, layerDetection);
-
-        if (r == null || !r.GetComponent<Bacteria>()) return null;
-        else return r.GetComponent<Bacteria>();
-
+        Vector3 position = Camera.main.ScreenToWorldPoint(pixelPosition) + Vector3.forward * 10;
+        var go = Instantiate(AllyPrefabs[id], position, Quaternion.identity);
+        Ally currentAlly = go.GetComponent<Ally>();
+        currentAlly.ChangeAppearance(0);
     }
+
+    internal void SpawnAlly(Transform blobTransform, int id)
+    {
+        SpawnAlly(Camera.main.WorldToScreenPoint(blobTransform.transform.position), id);
+    }
+
 
     public void SpawnAntibody(Vector3 pixelPosition, int id)
     {
@@ -94,7 +101,7 @@ public class GameLoop : MonoBehaviour
         var bacteria = CheckForBacteria(pixelPosition);
         if (bacteria == null) return;
 
-        Vector3 position = Camera.main.ScreenToWorldPoint(pixelPosition);
+        Vector3 position = Camera.main.ScreenToWorldPoint(pixelPosition) + Vector3.forward * 10;
         Transform targetNode = EvaluateAttachPossibility(bacteria.GetComponent<Bacteria>(), position);
         if (targetNode == null) return;
 
@@ -103,7 +110,22 @@ public class GameLoop : MonoBehaviour
         Antibody currentAnitbody = b.GetComponent<Antibody>();
         currentAnitbody.Protein = proteins[id];
         currentAnitbody.nodeTarget = targetNode;
+        currentAnitbody.sendAlly = true;
+        currentAnitbody.ChangeAppearance(0);
         onAntibodySpawned.Play();
+    }
+
+
+    public Bacteria CheckForBacteria(Vector3 pixelPosition)
+    {
+        if (stopped) return null;
+        Vector3 position = Camera.main.ScreenToWorldPoint(pixelPosition) + Vector3.forward * 10;
+        LineCalculus lc = VectorUtils.FindNearestLine(position, vein.CurrentPoints, vein.transform.position);
+        if (lc.distancePTP > vein.veinRadius) return null;
+
+        var r = Physics2D.OverlapCircle(position, dectectionRange, layerDetection);
+        if (r == null || !r.GetComponent<Bacteria>()) return null;
+        else return r.GetComponent<Bacteria>();
 
     }
 
@@ -152,7 +174,6 @@ public class GameLoop : MonoBehaviour
         return t;
     }
 
-
     void PrepareWin()
     {
         //Win();
@@ -165,6 +186,21 @@ public class GameLoop : MonoBehaviour
     {
         uiManager.DisplayWin();
         stopped = true;
+    }
+
+    Transform currentBacteria;
+    internal void AlertAllies(Transform bacteria)
+    {
+        Time.timeScale = 0.5f;
+        uiManager.DisplayAlert();
+        currentBacteria = bacteria;
+    }
+
+    internal void SpawnAllyFromPanel(int id)
+    {
+        Time.timeScale = 1f;
+        SpawnAlly(currentBacteria, id);
+        currentBacteria = null;
     }
 
     internal void OnBacteriaDied()

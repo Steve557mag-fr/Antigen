@@ -6,7 +6,7 @@ public class UIManager : MonoBehaviour
 {
     [Header("_References_")]
     public UIThermometer thermometer;
-    public CanvasGroup groupGameOver, groupWin;
+    public CanvasGroup groupGameOver, groupWin, groupAlert;
     public TextMeshProUGUI textCurrentBacteriaKilled, textCurrentBacteria;
 
     internal void UpdateScores(int currentBacteria, int maxBacteria)
@@ -25,6 +25,18 @@ public class UIManager : MonoBehaviour
     {
         groupWin.gameObject.SetActive(true);
         groupWin.LeanAlpha(1, 1f);
+    }
+
+    internal void DisplayAlert()
+    {
+        groupAlert.gameObject.SetActive(true);
+        groupAlert.LeanAlpha(1, 1f);
+    }
+
+
+    public void SpawnAlly(int id)
+    {
+        GameLoop.GetGameLoop().SpawnAlly(Input.mousePosition, id);
     }
 
 }

@@ -3,15 +3,18 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Blob : MonoBehaviour
 {
-    [Header("Movements")]
+    [Header("_Gamplay_")]
+    
+
+    [Header("_Movements_")]
     [SerializeField] float speed;
     [SerializeField] float direction = 1, reactivityForce = 0.5f;
 
-    [Header("References")]
+    [Header("_References_")]
     [SerializeField] internal SpriteRenderer[] nodeBorders;
     [SerializeField] internal SpriteMask[] nodeMasks;
 
-    [Header("Audio")]
+    [Header("_Audio_")]
     [SerializeField] AudioSource onBlobDuplicated;
 
 
@@ -25,7 +28,7 @@ public class Blob : MonoBehaviour
 
     internal ProteinType Protein
     {
-        set { protein = value; ChangeAppearance(Random.Range(1, 3)); }
+        set { protein = value; }
         get { return protein; }
     }
 
@@ -51,29 +54,12 @@ public class Blob : MonoBehaviour
 
     internal virtual void OnUpdate() { }
     internal virtual void OnStart() { }
-    internal virtual void ChangeAppearance(int nNode)
-    {
-
-    }
+    internal virtual void ChangeAppearance(int nNode) { }
     internal virtual void Move()
     {
 
         // Find the nearest path (two points, in the path array)
-        LineCalculus currentLine = new(999);
-
-        for(int i = 0; i < path.Length-1; i++)
-        {
-            LineCalculus line = VectorUtils.CalculateLine(
-                rigid.position + rigid.velocity * speed,
-                pivot + path[i],
-                pivot + path[i+1]
-            );
-
-            if (line.distance <= currentLine.distance)
-            {
-                currentLine = line;
-            }
-        }
+        LineCalculus currentLine = VectorUtils.FindNearestLine(rigid.position + rigid.velocity * speed, path, pivot);
 
         // Calculate LinePoint with variations
         float sine = Mathf.Sin(Time.time) * 0.25f;

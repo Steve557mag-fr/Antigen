@@ -9,7 +9,7 @@ public class Bacteria : Blob
     [SerializeField] float perlinExtentricity = 1, perlinElipsoid = 1;
     [SerializeField] LineRenderer borderBacteria;
 
-    const int POINTS_COUNT = 7;
+    const int POINTS_COUNT = 10;
     bool destroyTimerEnabled = false;
     int nodeLeft = 0;
     float timerBeforeDestroy = 0;
@@ -44,9 +44,10 @@ public class Bacteria : Blob
         nodeMasks   = new SpriteMask[nNode];
         for(int i = 0; i < nNode; i++)
         {
-            int id = i * 2;
-            Vector3 pos = (borderBacteria.GetPosition(id) + borderBacteria.GetPosition(id + 1))/2;
-            Vector3 dir = borderBacteria.GetPosition(id + 1) - borderBacteria.GetPosition(id);
+            int id = (i * 2) % borderBacteria.positionCount;
+            int idNxt = (id + 1) % borderBacteria.positionCount;
+            Vector3 pos = (borderBacteria.GetPosition(id) + borderBacteria.GetPosition(idNxt))/2;
+            Vector3 dir = borderBacteria.GetPosition(idNxt) - borderBacteria.GetPosition(id);
             Vector3 normal = VectorUtils.Ortho(dir).normalized;
 
             Debug.DrawRay(pos, Vector3.up, Color.green, 6);
@@ -67,13 +68,13 @@ public class Bacteria : Blob
         }
     }
     
-    internal void Attach(Transform node, Antibody antibody)
+    internal void Attach(Transform node, Blob blob)
     {   
-        if( antibody.Protein.form != Protein.form) Destroy(antibody.gameObject);
+        if(blob.Protein.form != Protein.form) Destroy(blob.gameObject);
         else {
-            antibody.transform.parent = node;
-            antibody.transform.LeanMoveLocal(Vector3.up, 0.25f);
-            antibody.transform.localRotation = Quaternion.AngleAxis(90, Vector3.forward);
+            blob.transform.parent = node;
+            blob.transform.LeanMoveLocal(Vector3.up, 0.25f);
+            blob.transform.localRotation = Quaternion.AngleAxis(90, Vector3.forward);
 
             nodeLeft--;
             if (nodeLeft <= 0) PrepareToDestroy();

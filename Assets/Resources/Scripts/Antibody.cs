@@ -1,7 +1,8 @@
 using UnityEngine;
 
-public class Antibody : Blob
+public class Antibody : Blob // Repsonsible of the call of other allies
 {
+    [SerializeField] internal bool sendAlly = true;
     [SerializeField] float rotationReactivity, dockingRadius = 0.35f;
     internal Transform nodeTarget;
     bool docked;
@@ -38,6 +39,7 @@ public class Antibody : Blob
         rigid.simulated = false;
         Destroy(GetComponent<Collider>());
         nodeTarget.parent.GetComponent<Bacteria>().Attach(nodeTarget, this);
+        if (sendAlly && nodeTarget.parent.GetComponent<Bacteria>().nodeMasks.Length == 1) GameLoop.GetGameLoop().AlertAllies(nodeTarget.parent);
 
     }
 

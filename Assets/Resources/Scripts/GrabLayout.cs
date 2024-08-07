@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 public class GrabLayout : MonoBehaviour, IEndDragHandler, IDragHandler
 {
     [SerializeField] int id;
-    [SerializeField] UnityEvent<Vector3,int> onDragEnded;
+    [SerializeField] UnityEvent<Vector3,int> onDragEnded, onDrag;
     [SerializeField] float hardness = 10f;
     [SerializeField] Vector3 initialPosition;
     Vector3 targetPosition;
@@ -17,6 +17,7 @@ public class GrabLayout : MonoBehaviour, IEndDragHandler, IDragHandler
     public void OnDrag(PointerEventData eventData)
     {
         targetPosition += new Vector3(eventData.delta.x, eventData.delta.y, 0) / scaleFactor;
+        onDrag.Invoke(Input.mousePosition, id);
     }
 
     public void OnEndDrag(PointerEventData eventData)

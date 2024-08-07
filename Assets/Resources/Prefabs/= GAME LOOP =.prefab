@@ -160,7 +160,7 @@ AudioSource:
   m_GameObject: {fileID: 1624407991167847101}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 6869194824673292998, guid: bc7dde10905e26b4c9a88026814620ae, type: 2}
   m_audioClip: {fileID: 8300000, guid: 7d1a102d5115e0645833bc3be01c1994, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.5
@@ -521,6 +521,7 @@ MonoBehaviour:
   stepLength: 2
   stepHeight: 1.5
   stepStretch: 3
+  veinRadius: 1.8
   shaperBoundMin: -1
   shaperBoundMax: 1
   edges:
@@ -688,7 +689,7 @@ AudioSource:
   m_GameObject: {fileID: 5352886721946115790}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 5193912845762988439, guid: bc7dde10905e26b4c9a88026814620ae, type: 2}
   m_audioClip: {fileID: 8300000, guid: 8b0d1256477fd1d4fb5bf3ab172f3aa6, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -994,7 +995,7 @@ AudioSource:
   m_GameObject: {fileID: 6598447009484220808}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 5193912845762988439, guid: bc7dde10905e26b4c9a88026814620ae, type: 2}
   m_audioClip: {fileID: 8300000, guid: 83edcf73d878830479b22e3adfd92c8c, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -1122,7 +1123,7 @@ AudioSource:
   m_GameObject: {fileID: 7246651786423423546}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 5193912845762988439, guid: bc7dde10905e26b4c9a88026814620ae, type: 2}
   m_audioClip: {fileID: 8300000, guid: c042db383818ae845937f7bc7a24f89b, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -1321,13 +1322,14 @@ MonoBehaviour:
   - form: {fileID: 7482667652216324306, guid: 5258153d6a079084c9510a1f65b55409, type: 3}
     antibodyForm: {fileID: 21300000, guid: 0557bf9c20c6a2743851e38a29bf539c, type: 3}
     color: {r: 1, g: 0.30588236, b: 0.30588236, a: 1}
-  spawnRate: 8
+  spawnRate: 16
   dectectionRange: 1.5
   temperatureRate: 0.5
   temperature: 36
   layerDetection:
     serializedVersion: 2
     m_Bits: 8
+  maxAntigenPerBacteria: 6
   onBacteriaSpawned: {fileID: 7078997893284271413}
   onTemperatureIncreased: {fileID: 7644127328486378548}
   onAntibodySpawned: {fileID: 7348711577059265249}
@@ -1338,3 +1340,6 @@ MonoBehaviour:
   uiManager: {fileID: 0}
   bacteriaPrefab: {fileID: 5866776702415814910, guid: 5226fc2e891680f4dbe836c50370200d, type: 3}
   antibodyPrefab: {fileID: 414792608004707843, guid: 8eacb23e61ead864e94c7c53d4a41e09, type: 3}
+  AllyPrefabs:
+  - {fileID: 7367358814496917993, guid: 5d385c68af757104f947ddfeb0f3df03, type: 3}
+  - {fileID: 8199184276713148775, guid: 38203a7ddc4a0624bbf9fa26c2c8bd4c, type: 3}

@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEngine;
 
 public static class Utilities
@@ -14,17 +15,14 @@ public static class Utilities
             DrawPoint(pivot + array[i], size, color);    
         }
     }
-
     public static float Remap(this float value, float from1, float to1, float from2, float to2)
     {
         return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
     }
-
     public static void PlayAudioSource(AudioSource source)
     {
         if (source == null || source.isPlaying) return; source.Play();
     }
-
 }
 
 public static class VectorUtils
@@ -39,23 +37,41 @@ public static class VectorUtils
         {
             distance = vAPB.magnitude,
             projectedBlob = lineA + vAPB,
-            pathVAPB = vAPB
+            pathVAPB = vAPB,
+            distancePTP = ((lineA + vAPB) - point).magnitude
         };
+    }
+    public static LineCalculus FindNearestLine(Vector3 point, Vector3[] path, Vector3 pivot)
+    {
+        LineCalculus currentLine = new(999);
+        for (int i = 0; i < path.Length - 1; i++)
+        {
+            LineCalculus line = CalculateLine(
+                point,
+                pivot + path[i],
+                pivot + path[i + 1]
+            );
+
+            if (line.distance <= currentLine.distance)
+            {
+                currentLine = line;
+            }
+        }
+        return currentLine;
     }
 }
 
 public struct LineCalculus
 {
-    internal float distance;
+    internal float distance, distancePTP;
     internal Vector3 projectedBlob, pathVAPB;
-
     internal LineCalculus(float d = Mathf.Infinity)
     {
         distance = d;
+        distancePTP = d;
         projectedBlob = Vector3.zero;
         pathVAPB = Vector3.zero;
     }
-
     internal void Draw()
     {
         Utilities.DrawPoint(projectedBlob, 0.5f, Color.red);
