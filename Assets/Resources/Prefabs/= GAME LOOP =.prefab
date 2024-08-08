@@ -1322,7 +1322,7 @@ MonoBehaviour:
   - form: {fileID: 7482667652216324306, guid: 5258153d6a079084c9510a1f65b55409, type: 3}
     antibodyForm: {fileID: 21300000, guid: 0557bf9c20c6a2743851e38a29bf539c, type: 3}
     color: {r: 1, g: 0.30588236, b: 0.30588236, a: 1}
-  spawnRate: 16
+  spawnRate: 9
   dectectionRange: 1.5
   temperatureRate: 0.5
   temperature: 36

@@ -14,9 +14,9 @@ public class UIThermometer : MonoBehaviour
     public void UpdateUI(float temperature)
     {
         float oldTemperature = fill.fillAmount.Remap(fillMinValue,1, 36f, 38.5f);
-        LeanTween.value(oldTemperature,temperature, 1.25f).setOnUpdate((float f) =>
+        LeanTween.value(oldTemperature,temperature, 1f).setOnUpdate((float f) =>
         {
-            fill.fillAmount = temperature.Remap(36, 38.5f, fillMinValue, 1);
+            fill.fillAmount = f.Remap(36, 38.5f, fillMinValue, 1);
             indicatorDigital.text = $"{temperature}°C";
         });
     }

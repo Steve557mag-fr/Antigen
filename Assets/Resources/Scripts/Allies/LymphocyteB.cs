@@ -14,23 +14,32 @@ public class LymphocyteB : Ally
             antibody.ChangeAppearance(0);
             antibody.enabled = false;
         }
+        released = false;
     }
+
+    bool released = false;
 
     internal override void OnUpdate()
     {
-        base.OnUpdate();
-
         if (timerBeforeFREEBIRD > 0) timerBeforeFREEBIRD -= Time.deltaTime;
         else Release();
 
+        base.OnUpdate();
     }
 
     void Release() {
+        if (released) return;
+        released = true;
+
+        print("Release!");
         foreach (Antibody antibody in antibodies)
         {
+            antibody.nodeTarget = enemy.EvaluateAttachPossibility(antibody.transform.position);
+            antibody.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
             antibody.enabled = true;
             antibody.transform.parent = null;
         }
+        Destroy(gameObject, 2);
     }
 
 }

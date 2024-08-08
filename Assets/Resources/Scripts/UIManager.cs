@@ -30,13 +30,18 @@ public class UIManager : MonoBehaviour
     internal void DisplayAlert()
     {
         groupAlert.gameObject.SetActive(true);
-        groupAlert.LeanAlpha(1, 1f);
+        groupAlert.LeanAlpha(1, 0.5f);
     }
 
+    internal void ResetAlert()
+    {
+        groupAlert.alpha = 0;
+        groupAlert.gameObject.SetActive(false);
+    }
 
     public void SpawnAlly(int id)
     {
-        GameLoop.GetGameLoop().SpawnAlly(Input.mousePosition, id);
+        GameLoop.GetGameLoop().SpawnAllyFromPanel(id);
     }
 
 }

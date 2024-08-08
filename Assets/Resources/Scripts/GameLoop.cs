@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Xml.Schema;
 using UnityEngine;
 
 public class GameLoop : MonoBehaviour
@@ -13,7 +12,7 @@ public class GameLoop : MonoBehaviour
     [SerializeField] LayerMask layerDetection;
     [SerializeField] int maxAntigenPerBacteria = 3;
     
-    [Header("Audio")]
+    [Header("_Audio_")]
     [SerializeField] AudioSource onBacteriaSpawned;
     [SerializeField] AudioSource onTemperatureIncreased, onAntibodySpawned;
 
@@ -80,19 +79,18 @@ public class GameLoop : MonoBehaviour
     }
     
 
-    public void SpawnAlly(Vector3 pixelPosition, int id)
+    public void SpawnAlly(Blob enemy, int id, bool targetIsNode = true)
     {
-        Vector3 position = Camera.main.ScreenToWorldPoint(pixelPosition) + Vector3.forward * 10;
+        Vector3 position = GetPointOnPath(enemy.transform.position, 3);
         var go = Instantiate(AllyPrefabs[id], position, Quaternion.identity);
-        Ally currentAlly = go.GetComponent<Ally>();
+        Ally currentAlly        = go.GetComponent<Ally>();
+        currentAlly.enemy       = enemy;
+        currentAlly.nodeTarget  = targetIsNode ? enemy.EvaluateAttachPossibility(position) : null;
+        currentAlly.Protein     = enemy.Protein;
+        currentAlly.CurrentPath = vein.CurrentPoints;
+        currentAlly.PivotPath   = vein.transform.position;
         currentAlly.ChangeAppearance(0);
     }
-
-    internal void SpawnAlly(Transform blobTransform, int id)
-    {
-        SpawnAlly(Camera.main.WorldToScreenPoint(blobTransform.transform.position), id);
-    }
-
 
     public void SpawnAntibody(Vector3 pixelPosition, int id)
     {
@@ -102,7 +100,7 @@ public class GameLoop : MonoBehaviour
         if (bacteria == null) return;
 
         Vector3 position = Camera.main.ScreenToWorldPoint(pixelPosition) + Vector3.forward * 10;
-        Transform targetNode = EvaluateAttachPossibility(bacteria.GetComponent<Bacteria>(), position);
+        Transform targetNode = bacteria.EvaluateAttachPossibility(position);
         if (targetNode == null) return;
 
         position.z = 0;
@@ -152,27 +150,7 @@ public class GameLoop : MonoBehaviour
 
     internal bool IsStopped => stopped;
 
-    Transform EvaluateAttachPossibility(Bacteria bacteria, Vector3 position)
-    {
-        Transform t = null;
-        float smDist = 9999;
-
-        for(int i = 0; i < 3; i++)
-        {
-            if (bacteria.transform.Find($"Node {i}") == null || bacteria.transform.Find($"Node {i}").childCount > 2) continue;
-
-            var currentT = bacteria.transform.Find($"Node {i}");
-            var crDist = Vector3.Distance(position, currentT.position);
-            if (crDist < smDist)
-            {
-                smDist = crDist;
-                t = currentT;
-            }
-
-        }
-
-        return t;
-    }
+    
 
     void PrepareWin()
     {
@@ -188,18 +166,19 @@ public class GameLoop : MonoBehaviour
         stopped = true;
     }
 
-    Transform currentBacteria;
+    Blob currentBacteria;
     internal void AlertAllies(Transform bacteria)
     {
         Time.timeScale = 0.5f;
         uiManager.DisplayAlert();
-        currentBacteria = bacteria;
+        currentBacteria = bacteria.GetComponent<Blob>();
     }
 
     internal void SpawnAllyFromPanel(int id)
     {
         Time.timeScale = 1f;
         SpawnAlly(currentBacteria, id);
+        uiManager.ResetAlert();
         currentBacteria = null;
     }
 
@@ -216,8 +195,14 @@ public class GameLoop : MonoBehaviour
         uiManager.UpdateScores(score, maxBacteria);
     }
 
-    public static GameLoop GetGameLoop() => FindAnyObjectByType<GameLoop>();
+    internal Vector3 GetPointOnPath(Vector3 pointSample, float dist = 3)
+    {
+        LineCalculus line = VectorUtils.FindNearestLine(pointSample+Vector3.right * 3f, vein.CurrentPoints, vein.transform.position);
+        Vector3 p = line.projectedPoint;
+        return p;
+    }
 
+    public static GameLoop GetGameLoop() => FindAnyObjectByType<GameLoop>();
 
 }
 

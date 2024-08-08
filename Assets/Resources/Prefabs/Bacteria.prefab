@@ -188,6 +188,7 @@ MonoBehaviour:
   speed: 0.8
   direction: 3.44
   reactivityForce: 0.33
+  rotationReactivity: 0.44
   nodeBorders:
   - {fileID: 0}
   - {fileID: 0}
@@ -199,7 +200,7 @@ MonoBehaviour:
   onBlobDuplicated: {fileID: 1298979166830663206}
   onBacteriaDestroyed: {fileID: 7741949316150794343}
   onBacteriaEated: {fileID: 0}
-  size: 1
+  size: 1.24
   perlinExtentricity: 1.15
   perlinElipsoid: 1
   borderBacteria: {fileID: 5083677542906115610}

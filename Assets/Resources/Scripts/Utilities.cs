@@ -36,7 +36,7 @@ public static class VectorUtils
         return new()
         {
             distance = vAPB.magnitude,
-            projectedBlob = lineA + vAPB,
+            projectedPoint = lineA + vAPB,
             pathVAPB = vAPB,
             distancePTP = ((lineA + vAPB) - point).magnitude
         };
@@ -64,18 +64,18 @@ public static class VectorUtils
 public struct LineCalculus
 {
     internal float distance, distancePTP;
-    internal Vector3 projectedBlob, pathVAPB;
+    internal Vector3 projectedPoint, pathVAPB;
     internal LineCalculus(float d = Mathf.Infinity)
     {
         distance = d;
         distancePTP = d;
-        projectedBlob = Vector3.zero;
+        projectedPoint = Vector3.zero;
         pathVAPB = Vector3.zero;
     }
     internal void Draw()
     {
-        Utilities.DrawPoint(projectedBlob, 0.5f, Color.red);
-        Utilities.DrawPoint(projectedBlob - pathVAPB, 0.5f, Color.yellow);
-        Debug.DrawLine(projectedBlob - pathVAPB, projectedBlob, Color.cyan);
+        Utilities.DrawPoint(projectedPoint, 0.5f, Color.red);
+        Utilities.DrawPoint(projectedPoint - pathVAPB, 0.5f, Color.yellow);
+        Debug.DrawLine(projectedPoint - pathVAPB, projectedPoint, Color.cyan);
     }
 }

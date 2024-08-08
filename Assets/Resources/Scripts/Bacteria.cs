@@ -20,11 +20,12 @@ public class Bacteria : Blob
         destroyTimerEnabled = false;
     }
 
-    internal override void ChangeAppearance(int nNode)
+    internal override void ChangeAppearance(int newCount)
     {
         borderBacteria.positionCount = POINTS_COUNT+1;
         float ANGLEDIF = (360 / POINTS_COUNT);
-        nodeLeft = nNode;
+        CountNodes = newCount;
+        nodeLeft = newCount;
 
         for (int i = 0; i <= POINTS_COUNT; i++)
         {
@@ -40,9 +41,9 @@ public class Bacteria : Blob
         }
         borderBacteria.Simplify(0.1f);
 
-        nodeBorders = new SpriteRenderer[nNode];
-        nodeMasks   = new SpriteMask[nNode];
-        for(int i = 0; i < nNode; i++)
+        nodeBorders = new SpriteRenderer[CountNodes];
+        nodeMasks   = new SpriteMask[CountNodes];
+        for(int i = 0; i < CountNodes; i++)
         {
             int id = (i * 2) % borderBacteria.positionCount;
             int idNxt = (id + 1) % borderBacteria.positionCount;
@@ -66,6 +67,7 @@ public class Bacteria : Blob
             node.name = "Node " + id;
 
         }
+
     }
     
     internal void Attach(Transform node, Blob blob)
